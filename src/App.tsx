@@ -4,12 +4,14 @@ import './App.css';
 import { getAllProducts, getAllProductsAsync } from './features/product-slice';
 import { fetchProductRequest } from './features/productActionSaga';
 import { getErrorSelector, getPendingSelector, getProductsSelector } from './features/selector';
+import Products from './modules/localStorage/Product.storage';
 import { AppDispatch, RootState } from './store';
 
 function App() {
 
   console.log("app");
-  
+
+  const productsFromStorage = Products.getInstance();
 
   const products = useSelector((state: RootState) => state.products)
 
@@ -25,14 +27,17 @@ function App() {
     dispatch(getAllProductsAsync())
       .unwrap()
       .then((originalPromiseResult) => {
-        localStorage.setItem('products', JSON.stringify(originalPromiseResult));
-        console.log(originalPromiseResult);
+        // console.log(originalPromiseResult);
+        // localStorage.setItem('products', JSON.stringify(originalPromiseResult));
+        productsFromStorage.setProducts(originalPromiseResult);
 
       })
       .then(() => {
-        dispatch(getAllProducts(JSON.parse(localStorage.getItem('products') || "")))
-        console.log(JSON.parse(localStorage.getItem('products') || ""));
-        moodChanged=false;
+
+          dispatch(getAllProducts(productsFromStorage.getProducts()))
+
+        console.log(productsFromStorage.getProducts() )
+        moodChanged = false;
         console.log(products);
 
       })
@@ -47,13 +52,13 @@ function App() {
 
   const sagaProducts = () => {
     dispatch(fetchProductRequest())
-    moodChanged=true;
+    moodChanged = true;
   }
 
   return (
     <div className="App">
       <header className="App-header">
-      <div>
+        <div>
           {moodChanged ? (
             pending ? (
               <div>Loading...</div>
