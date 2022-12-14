@@ -36,24 +36,24 @@ export const productSlice = createSlice({
                 state.push(element)
             });
             // state.concat(action.payload);
-            
+
+        },
+      
+    },
+extraReducers: (builder) => {
+    builder.addCase(getAllProductsAsync.fulfilled, (state, action) => {
+        // Add user to the state array
+        while (state.length) {
+            state.pop();
         }
-    },
-    extraReducers: (builder) => {
-        builder.addCase(getAllProductsAsync.fulfilled, (state, action) => {
-            // Add user to the state array
-            while(state.length){
-                state.pop();
-              }  
-            state.concat(action.payload)
-            
-        })
-    },
+        state.concat(action.payload)
+
+    })
+}
 });
 
 export const {
     getAllProducts,
-
 } = productSlice.actions
 
 export default productSlice.reducer
