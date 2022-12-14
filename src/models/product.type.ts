@@ -1,3 +1,5 @@
+import Immutable from "immutable";
+
 export interface IProduct{
     id: number;
     title: string;
